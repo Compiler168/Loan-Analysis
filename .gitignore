@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+*.pyc
+
+# ML artifacts (large binary files)
+ml-service/models/*.pkl
+ml-service/data/*.csv
+
+# Environment
+.env
+.env.local
+
+# Build
+.next/
+out/
+dist/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Cache
+.pytest_cache/
+*.egg-info/
