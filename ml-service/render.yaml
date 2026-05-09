@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: smartloan-ml-service
+    env: docker
+    region: oregon
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 8000

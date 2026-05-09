@@ -77,12 +77,14 @@ const startServer = async () => {
     }
   }
 
-  app.listen(PORT, () => {
-    console.log(`\n🚀 SmartLoan AI+ Backend on port ${PORT}`);
-    console.log(`📡 ML Service: ${process.env.ML_SERVICE_URL || 'http://localhost:8000'}`);
-    console.log(`💾 Database: ${dbConnected ? 'MongoDB Atlas' : 'In-memory fallback'}`);
-    console.log(`🔗 API: http://localhost:${PORT}/api\n`);
-  });
+  if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+    app.listen(PORT, () => {
+      console.log(`\n🚀 SmartLoan AI+ Backend on port ${PORT}`);
+      console.log(`📡 ML Service: ${process.env.ML_SERVICE_URL || 'http://localhost:8000'}`);
+      console.log(`💾 Database: ${dbConnected ? 'MongoDB Atlas' : 'In-memory fallback'}`);
+      console.log(`🔗 API: http://localhost:${PORT}/api\n`);
+    });
+  }
 };
 
 startServer();
