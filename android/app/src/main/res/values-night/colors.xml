@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark Mode Colors -->
+    <color name="background">#0F172A</color>
+    <color name="surface">#1E293B</color>
+    <color name="surface_variant">#334155</color>
+    <color name="on_background">#F1F5F9</color>
+    <color name="on_surface">#F1F5F9</color>
+    <color name="on_surface_variant">#94A3B8</color>
+
+    <color name="card_background">#1E293B</color>
+    <color name="card_stroke">#334155</color>
+    <color name="divider">#334155</color>
+
+    <color name="muted">#334155</color>
+    <color name="muted_foreground">#94A3B8</color>
+
+    <color name="nav_selected">#1A2563EB</color>
+
+    <color name="success_light">#1A22C55E</color>
+    <color name="warning_light">#1AEAB308</color>
+    <color name="error_light">#1AEF4444</color>
+</resources>

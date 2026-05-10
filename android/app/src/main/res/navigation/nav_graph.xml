@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_dashboard">
+
+    <fragment
+        android:id="@+id/nav_dashboard"
+        android:name="com.smartloan.ai.ui.dashboard.DashboardFragment"
+        android:label="@string/nav_dashboard"
+        tools:layout="@layout/fragment_dashboard" />
+
+    <fragment
+        android:id="@+id/nav_prediction"
+        android:name="com.smartloan.ai.ui.prediction.LoanPredictionFragment"
+        android:label="@string/nav_prediction"
+        tools:layout="@layout/fragment_loan_prediction" />
+
+    <fragment
+        android:id="@+id/nav_chatbot"
+        android:name="com.smartloan.ai.ui.chatbot.ChatbotFragment"
+        android:label="@string/nav_chatbot"
+        tools:layout="@layout/fragment_chatbot" />
+
+    <fragment
+        android:id="@+id/nav_analysis"
+        android:name="com.smartloan.ai.ui.analysis.AnalysisFragment"
+        android:label="@string/nav_analysis"
+        tools:layout="@layout/fragment_analysis" />
+
+    <fragment
+        android:id="@+id/nav_simulator"
+        android:name="com.smartloan.ai.ui.simulator.SimulatorFragment"
+        android:label="@string/nav_simulator"
+        tools:layout="@layout/fragment_simulator" />
+
+    <fragment
+        android:id="@+id/nav_reports"
+        android:name="com.smartloan.ai.ui.reports.ReportsFragment"
+        android:label="@string/nav_reports"
+        tools:layout="@layout/fragment_reports" />
+
+    <fragment
+        android:id="@+id/nav_admin"
+        android:name="com.smartloan.ai.ui.admin.AdminFragment"
+        android:label="@string/nav_admin"
+        tools:layout="@layout/fragment_admin" />
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="com.smartloan.ai.ui.settings.SettingsFragment"
+        android:label="@string/nav_settings"
+        tools:layout="@layout/fragment_settings" />
+
+</navigation>

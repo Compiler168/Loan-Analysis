@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipeRefresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background"
+        android:clipToPadding="false"
+        android:padding="@dimen/spacing_md">
+
+        <LinearLayout
+            android:id="@+id/contentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <!-- Title -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="@string/dashboard_title" style="@style/TextStyle.Heading1" />
+            <TextView android:id="@+id/tvWelcome" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="4dp" style="@style/TextStyle.Caption" android:textSize="14sp" />
+
+            <!-- Stats Grid (2 columns) -->
+            <GridLayout
+                android:id="@+id/statsGrid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
+                android:columnCount="2"
+                android:useDefaultMargins="true">
+
+                <!-- Stat cards are added programmatically -->
+            </GridLayout>
+
+            <!-- Financial Growth Chart -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
+                app:cardCornerRadius="@dimen/card_radius" app:cardElevation="@dimen/card_elevation"
+                app:cardBackgroundColor="@color/card_background" app:strokeWidth="1dp" app:strokeColor="@color/card_stroke">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="vertical" android:padding="@dimen/card_padding">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/financial_growth" style="@style/TextStyle.Heading3" />
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/chartGrowth"
+                        android:layout_width="match_parent" android:layout_height="@dimen/chart_height"
+                        android:layout_marginTop="@dimen/spacing_sm" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- AI Insights -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
+                app:cardCornerRadius="@dimen/card_radius" app:cardElevation="@dimen/card_elevation"
+                app:cardBackgroundColor="@color/card_background" app:strokeWidth="1dp" app:strokeColor="@color/card_stroke">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="vertical" android:padding="@dimen/card_padding">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/ai_insights" style="@style/TextStyle.Heading3"
+                        android:drawableStart="@android:drawable/ic_menu_info_details" android:drawablePadding="8dp" />
+                    <LinearLayout
+                        android:id="@+id/insightsContainer"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="vertical" android:layout_marginTop="@dimen/spacing_sm" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Income vs Expenses -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
+                app:cardCornerRadius="@dimen/card_radius" app:cardElevation="@dimen/card_elevation"
+                app:cardBackgroundColor="@color/card_background" app:strokeWidth="1dp" app:strokeColor="@color/card_stroke">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="vertical" android:padding="@dimen/card_padding">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/income_vs_expenses" style="@style/TextStyle.Heading3" />
+                    <com.github.mikephil.charting.charts.BarChart
+                        android:id="@+id/chartIncomeExpenses"
+                        android:layout_width="match_parent" android:layout_height="@dimen/chart_height"
+                        android:layout_marginTop="@dimen/spacing_sm" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Risk Radar -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
+                app:cardCornerRadius="@dimen/card_radius" app:cardElevation="@dimen/card_elevation"
+                app:cardBackgroundColor="@color/card_background" app:strokeWidth="1dp" app:strokeColor="@color/card_stroke">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="vertical" android:padding="@dimen/card_padding">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/risk_radar" style="@style/TextStyle.Heading3" />
+                    <com.github.mikephil.charting.charts.RadarChart
+                        android:id="@+id/chartRadar"
+                        android:layout_width="match_parent" android:layout_height="@dimen/chart_height"
+                        android:layout_marginTop="@dimen/spacing_sm" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Recent Activity -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md" android:layout_marginBottom="@dimen/spacing_md"
+                app:cardCornerRadius="@dimen/card_radius" app:cardElevation="@dimen/card_elevation"
+                app:cardBackgroundColor="@color/card_background" app:strokeWidth="1dp" app:strokeColor="@color/card_stroke">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="vertical" android:padding="@dimen/card_padding">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/recent_activity" style="@style/TextStyle.Heading3" />
+                    <LinearLayout
+                        android:id="@+id/activityContainer"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="vertical" android:layout_marginTop="@dimen/spacing_sm" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+        <!-- Loading -->
+        <LinearLayout
+            android:id="@+id/loadingLayout"
+            android:layout_width="match_parent" android:layout_height="match_parent"
+            android:gravity="center" android:orientation="vertical">
+            <ProgressBar android:layout_width="48dp" android:layout_height="48dp" android:indeterminateTint="@color/primary" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md" android:text="Running AI financial analysis…"
+                style="@style/TextStyle.Caption" />
+        </LinearLayout>
+    </ScrollView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

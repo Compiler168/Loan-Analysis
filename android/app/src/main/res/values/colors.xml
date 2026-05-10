@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Brand Colors -->
+    <color name="primary">#2563EB</color>
+    <color name="primary_dark">#1D4ED8</color>
+    <color name="primary_light">#60A5FA</color>
+    <color name="primary_variant">#1E40AF</color>
+    <color name="on_primary">#FFFFFF</color>
+
+    <!-- Secondary -->
+    <color name="secondary">#06B6D4</color>
+    <color name="secondary_dark">#0891B2</color>
+    <color name="on_secondary">#FFFFFF</color>
+
+    <!-- Tertiary -->
+    <color name="tertiary">#8B5CF6</color>
+    <color name="on_tertiary">#FFFFFF</color>
+
+    <!-- Status Colors -->
+    <color name="success">#22C55E</color>
+    <color name="success_light">#DCFCE7</color>
+    <color name="success_dark">#16A34A</color>
+    <color name="warning">#EAB308</color>
+    <color name="warning_light">#FEF9C3</color>
+    <color name="error">#EF4444</color>
+    <color name="error_light">#FEE2E2</color>
+    <color name="on_error">#FFFFFF</color>
+
+    <!-- Surface Colors (Light) -->
+    <color name="background">#F8FAFC</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_variant">#F1F5F9</color>
+    <color name="on_background">#0F172A</color>
+    <color name="on_surface">#0F172A</color>
+    <color name="on_surface_variant">#64748B</color>
+
+    <!-- Card & Container -->
+    <color name="card_background">#FFFFFF</color>
+    <color name="card_stroke">#E2E8F0</color>
+    <color name="divider">#E2E8F0</color>
+
+    <!-- Muted -->
+    <color name="muted">#F1F5F9</color>
+    <color name="muted_foreground">#64748B</color>
+
+    <!-- Chart Colors -->
+    <color name="chart_blue">#2563EB</color>
+    <color name="chart_cyan">#06B6D4</color>
+    <color name="chart_green">#22C55E</color>
+    <color name="chart_red">#EF4444</color>
+    <color name="chart_amber">#F59E0B</color>
+    <color name="chart_purple">#8B5CF6</color>
+    <color name="chart_rose">#F43F5E</color>
+
+    <!-- Gradient -->
+    <color name="gradient_start">#2563EB</color>
+    <color name="gradient_end">#06B6D4</color>
+
+    <!-- Nav Drawer -->
+    <color name="nav_selected">#EFF6FF</color>
+    <color name="nav_icon_selected">#2563EB</color>
+    <color name="nav_icon_default">#64748B</color>
+
+    <!-- Transparent -->
+    <color name="transparent">#00000000</color>
+    <color name="scrim">#80000000</color>
+
+    <!-- Stat Card Backgrounds -->
+    <color name="stat_blue_bg">#1A2563EB</color>
+    <color name="stat_green_bg">#1A22C55E</color>
+    <color name="stat_amber_bg">#1AEAB308</color>
+    <color name="stat_purple_bg">#1A8B5CF6</color>
+    <color name="stat_cyan_bg">#1A06B6D4</color>
+    <color name="stat_rose_bg">#1AF43F5E</color>
+</resources>

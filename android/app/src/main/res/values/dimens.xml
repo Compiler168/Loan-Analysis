@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Spacing -->
+    <dimen name="spacing_xs">4dp</dimen>
+    <dimen name="spacing_sm">8dp</dimen>
+    <dimen name="spacing_md">16dp</dimen>
+    <dimen name="spacing_lg">24dp</dimen>
+    <dimen name="spacing_xl">32dp</dimen>
+    <dimen name="spacing_xxl">48dp</dimen>
+
+    <!-- Card -->
+    <dimen name="card_radius">16dp</dimen>
+    <dimen name="card_elevation">2dp</dimen>
+    <dimen name="card_padding">16dp</dimen>
+
+    <!-- Button -->
+    <dimen name="button_radius">12dp</dimen>
+    <dimen name="button_height">52dp</dimen>
+
+    <!-- Input -->
+    <dimen name="input_radius">12dp</dimen>
+
+    <!-- Text -->
+    <dimen name="text_h1">28sp</dimen>
+    <dimen name="text_h2">20sp</dimen>
+    <dimen name="text_h3">16sp</dimen>
+    <dimen name="text_body">14sp</dimen>
+    <dimen name="text_caption">12sp</dimen>
+    <dimen name="text_small">11sp</dimen>
+
+    <!-- Icons -->
+    <dimen name="icon_sm">16dp</dimen>
+    <dimen name="icon_md">24dp</dimen>
+    <dimen name="icon_lg">32dp</dimen>
+    <dimen name="icon_xl">48dp</dimen>
+
+    <!-- Charts -->
+    <dimen name="chart_height">260dp</dimen>
+    <dimen name="chart_height_large">300dp</dimen>
+
+    <!-- Avatar -->
+    <dimen name="avatar_size">48dp</dimen>
+    <dimen name="avatar_size_sm">36dp</dimen>
+
+    <!-- Bottom Nav -->
+    <dimen name="bottom_nav_height">64dp</dimen>
+
+    <!-- Score Circle -->
+    <dimen name="score_circle_size">100dp</dimen>
+    <dimen name="score_circle_stroke">8dp</dimen>
+</resources>

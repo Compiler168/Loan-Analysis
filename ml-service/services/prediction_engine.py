@@ -30,11 +30,11 @@ class PredictionEngine:
             self.scaler = joblib.load(os.path.join(self.models_dir, 'scaler.pkl'))
             self.label_encoder = joblib.load(os.path.join(self.models_dir, 'label_encoder.pkl'))
             self.feature_columns = joblib.load(os.path.join(self.models_dir, 'feature_columns.pkl'))
-            with open(os.path.join(self.models_dir, 'model_metadata.json'), 'r') as f:
+            with open(os.path.join(self.models_dir, 'model_metadata.json'), 'r', encoding='utf-8') as f:
                 self.metadata = json.load(f)
-            print("✅ All models loaded successfully")
+            print("All models loaded successfully")
         except Exception as e:
-            print(f"⚠️  Model loading error: {e}")
+            print(f"Model loading error: {e}")
             print("   Run training pipeline first: python training/train_models.py")
 
     def _compute_derived(self, data: Dict) -> Dict:
