@@ -52,8 +52,8 @@ public class AuthViewModel extends ViewModel {
                 });
     }
 
-    public void register(String name, String email, String password) {
-        ApiClient.getService().register(new RegisterRequest(name, email, password))
+    public void register(String name, String email, String phone, String password) {
+        ApiClient.getService().register(new RegisterRequest(name, email, password, phone))
                 .enqueue(new Callback<ApiResponse<AuthData>>() {
                     @Override
                     public void onResponse(Call<ApiResponse<AuthData>> call, Response<ApiResponse<AuthData>> response) {

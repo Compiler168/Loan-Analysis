@@ -68,6 +68,14 @@ public class TokenManager {
         return prefs.getString(Constants.KEY_THEME, Constants.THEME_SYSTEM);
     }
 
+    public void setOnboardingCompleted(boolean completed) {
+        prefs.edit().putBoolean(Constants.KEY_ONBOARDING_COMPLETED, completed).apply();
+    }
+
+    public boolean isOnboardingCompleted() {
+        return prefs.getBoolean(Constants.KEY_ONBOARDING_COMPLETED, false);
+    }
+
     public void clearSession() {
         prefs.edit().clear().apply();
     }

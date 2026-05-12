@@ -18,9 +18,9 @@
         <item name="colorOnSurface">@color/on_surface</item>
         <item name="colorSurfaceVariant">@color/surface_variant</item>
         <item name="colorOnSurfaceVariant">@color/on_surface_variant</item>
-        <item name="android:statusBarColor">@color/primary_dark</item>
+        <item name="android:statusBarColor">@color/surface</item>
         <item name="android:navigationBarColor">@color/surface</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="23">false</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
 
         <!-- Default widget styles -->
         <item name="materialButtonStyle">@style/Widget.SmartLoan.Button</item>
@@ -30,8 +30,9 @@
 
     <!-- Auth Theme (Full screen gradient) -->
     <style name="Theme.SmartLoanAI.Auth" parent="Theme.SmartLoanAI">
-        <item name="android:statusBarColor">@color/primary</item>
+        <item name="android:statusBarColor">#1E293B</item>
         <item name="android:windowBackground">@color/background</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="23">false</item>
     </style>
 
     <!-- Button Style -->
@@ -52,10 +53,44 @@
 
     <!-- TextInput Style -->
     <style name="Widget.SmartLoan.TextInput" parent="Widget.Material3.TextInputLayout.OutlinedBox">
-        <item name="boxCornerRadiusTopStart">12dp</item>
-        <item name="boxCornerRadiusTopEnd">12dp</item>
-        <item name="boxCornerRadiusBottomStart">12dp</item>
-        <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="boxCornerRadiusTopStart">16dp</item>
+        <item name="boxCornerRadiusTopEnd">16dp</item>
+        <item name="boxCornerRadiusBottomStart">16dp</item>
+        <item name="boxCornerRadiusBottomEnd">16dp</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">2dp</item>
+        <item name="boxStrokeColor">@color/input_stroke</item>
+        <item name="boxBackgroundColor">@color/input_bg</item>
+        <item name="startIconTint">@color/primary</item>
+        <item name="endIconTint">@color/text_secondary</item>
+        <item name="hintTextColor">@color/primary</item>
+        <item name="android:textColorHint">@color/text_muted</item>
+        <item name="errorIconTint">@color/error</item>
+        <item name="errorTextColor">@color/error</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.SmartLoan.SmallComponent</item>
+    </style>
+
+    <style name="ShapeAppearance.SmartLoan.SmallComponent" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerSize">16dp</item>
+    </style>
+
+    <style name="Widget.SmartLoan.Button.Social" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="cornerRadius">20dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="strokeColor">@color/card_stroke</item>
+        <item name="strokeWidth">1.5dp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">14sp</item>
+        <item name="rippleColor">@color/primary_light</item>
+        <item name="android:backgroundTint">@color/white</item>
+    </style>
+
+    <style name="Widget.SmartLoan.Button.SocialIcon" parent="Widget.SmartLoan.Button.Social">
+        <item name="android:padding">0dp</item>
+        <item name="iconPadding">0dp</item>
+        <item name="iconGravity">textStart</item>
     </style>
 
     <!-- Card Style -->
@@ -68,6 +103,8 @@
     </style>
 
     <!-- Text Styles -->
+    <style name="TextStyle" />
+
     <style name="TextStyle.Heading1">
         <item name="android:textSize">28sp</item>
         <item name="android:textStyle">bold</item>
@@ -109,6 +146,14 @@
         <item name="android:textSize">24sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/on_surface</item>
+    </style>
+
+    <style name="ShapeAppearance.Circle" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="ShapeAppearance.MaterialComponents.SmallComponent" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerSize">12dp</item>
     </style>
 
     <!-- Chip Style -->

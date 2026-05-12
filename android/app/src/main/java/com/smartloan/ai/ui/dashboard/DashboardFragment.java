@@ -6,11 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -25,6 +27,7 @@ import com.smartloan.ai.R;
 import com.smartloan.ai.databinding.FragmentDashboardBinding;
 import com.smartloan.ai.data.models.DashboardData;
 import com.smartloan.ai.utils.TokenManager;
+import com.smartloan.ai.utils.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,19 +50,47 @@ public class DashboardFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
 
         String userName = TokenManager.getInstance(requireContext()).getUserName();
-        binding.tvWelcome.setText("Welcome back, " + userName + ". Your intelligent overview.");
+        binding.tvUserName.setText(userName);
 
         binding.swipeRefresh.setColorSchemeResources(R.color.primary);
         binding.swipeRefresh.setOnRefreshListener(() -> viewModel.loadDashboard());
 
         observeData();
         viewModel.loadDashboard();
+
+        setupHeaderActions();
+        setupScrollListener();
+    }
+
+    private void setupScrollListener() {
+        binding.dashboardScrollView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            // Animate header border and elevation based on scroll position
+            float threshold = ViewUtils.dpToPx(requireContext(), 20);
+            float alpha = Math.min((float) scrollY / threshold, 1f);
+            
+            binding.headerBorder.setAlpha(alpha * 0.4f);
+            binding.headerContainer.setElevation(alpha * 12f);
+        });
+    }
+
+    private void setupHeaderActions() {
+        binding.ivNotification.setOnClickListener(v -> 
+            ViewUtils.showToast(requireContext(), getString(R.string.notifications) + " coming soon"));
+        
+        binding.ivHeaderProfile.setOnClickListener(v -> {
+            try {
+                androidx.navigation.Navigation.findNavController(v).navigate(R.id.nav_settings);
+            } catch (Exception e) {
+                // Navigation failed
+            }
+        });
     }
 
     private void observeData() {
         viewModel.getLoading().observe(getViewLifecycleOwner(), loading -> {
             binding.loadingLayout.setVisibility(loading ? View.VISIBLE : View.GONE);
             binding.contentLayout.setVisibility(loading ? View.GONE : View.VISIBLE);
+            binding.headerContainer.setVisibility(loading ? View.GONE : View.VISIBLE);
             binding.swipeRefresh.setRefreshing(false);
         });
 
@@ -79,47 +110,70 @@ public class DashboardFragment extends Fragment {
 
     private void buildStatCards(DashboardData data) {
         binding.statsGrid.removeAllViews();
-        String[][] stats = {
-                {"Loan Approval", data.loanProbability + "%", "#2563EB"},
-                {"Health Score", data.healthScore + "/100", "#22C55E"},
-                {"Risk Level", capitalize(data.riskLevel), "#EAB308"},
-                {"Credit Score", String.valueOf(data.creditScore), "#8B5CF6"},
-                {"Monthly Savings", "$" + String.format("%,.0f", data.monthlySavings), "#06B6D4"},
-                {"Debt-to-Income", String.format("%.1f%%", data.dtiRatio * 100), "#F43F5E"},
+        
+        Object[][] stats = {
+                {getString(R.string.loan_approval), data.loanProbability + "%", R.color.primary, R.drawable.ic_nav_prediction},
+                {getString(R.string.health_score), data.healthScore + "/100", R.color.secondary, R.drawable.ic_nav_analysis},
+                {getString(R.string.risk_level), capitalize(data.riskLevel), R.color.warning, R.drawable.ic_nav_simulator},
+                {getString(R.string.credit_score), String.valueOf(data.creditScore), R.color.tertiary, R.drawable.ic_user_premium},
+                {getString(R.string.monthly_savings), ViewUtils.formatCurrency(data.monthlySavings), R.color.primary, R.drawable.ic_nav_dashboard},
+                {getString(R.string.dti_ratio), ViewUtils.formatPercentage(data.dtiRatio * 100), R.color.error, R.drawable.ic_nav_analysis},
         };
 
-        for (String[] stat : stats) {
+        for (Object[] stat : stats) {
             MaterialCardView card = new MaterialCardView(requireContext());
             GridLayout.LayoutParams params = new GridLayout.LayoutParams();
             params.width = 0;
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1f);
-            params.setMargins(8, 8, 8, 8);
+            params.setMargins(12, 12, 12, 12);
             card.setLayoutParams(params);
-            card.setCardElevation(4f);
+            card.setCardElevation(0f);
             card.setRadius(getResources().getDimension(R.dimen.card_radius));
-            card.setCardBackgroundColor(getResources().getColor(R.color.card_background, null));
-            card.setStrokeWidth(1);
-            card.setStrokeColor(getResources().getColor(R.color.card_stroke, null));
+            card.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.surface));
+            card.setStrokeWidth(2);
+            card.setStrokeColor(ContextCompat.getColor(requireContext(), R.color.card_stroke));
 
             LinearLayout inner = new LinearLayout(requireContext());
             inner.setOrientation(LinearLayout.VERTICAL);
-            inner.setPadding(32, 28, 32, 28);
+            inner.setPadding(32, 32, 32, 32);
 
-            TextView title = new TextView(requireContext());
-            title.setText(stat[0]);
-            title.setTextSize(12f);
-            title.setTextColor(getResources().getColor(R.color.muted_foreground, null));
+            // Icon with subtle background
+            ImageView icon = new ImageView(requireContext());
+            icon.setImageResource((Integer) stat[3]);
+            int color = ContextCompat.getColor(requireContext(), (Integer) stat[2]);
+            icon.setColorFilter(color);
+            
+            LinearLayout.LayoutParams iconLp = new LinearLayout.LayoutParams(
+                    (int)(32 * getResources().getDisplayMetrics().density), 
+                    (int)(32 * getResources().getDisplayMetrics().density));
+            iconLp.setMargins(0, 0, 0, 16);
+            icon.setLayoutParams(iconLp);
+            
+            // Add a subtle background to the icon
+            android.graphics.drawable.GradientDrawable iconBg = new android.graphics.drawable.GradientDrawable();
+            iconBg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+            iconBg.setCornerRadius(16f);
+            iconBg.setColor(color);
+            iconBg.setAlpha(25); // ~10% opacity
+            icon.setBackground(iconBg);
+            icon.setPadding(12, 12, 12, 12);
 
             TextView value = new TextView(requireContext());
-            value.setText(stat[1]);
-            value.setTextSize(22f);
-            value.setTextColor(Color.parseColor(stat[2]));
-            value.setTypeface(null, android.graphics.Typeface.BOLD);
-            value.setPadding(0, 8, 0, 0);
+            value.setText((String) stat[1]);
+            value.setTextSize(18f);
+            value.setTextColor(color);
+            value.setTypeface(android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.BOLD));
 
-            inner.addView(title);
+            TextView title = new TextView(requireContext());
+            title.setText((String) stat[0]);
+            title.setTextSize(12f);
+            title.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
+            title.setPadding(0, 4, 0, 0);
+
+            inner.addView(icon);
             inner.addView(value);
+            inner.addView(title);
             card.addView(inner);
             binding.statsGrid.addView(card);
         }
@@ -129,6 +183,7 @@ public class DashboardFragment extends Fragment {
         if (data.financialGrowth == null || data.financialGrowth.isEmpty()) return;
 
         LineChart chart = binding.chartGrowth;
+        chart.clear();
         List<Entry> entries = new ArrayList<>();
         List<String> labels = new ArrayList<>();
 
@@ -138,29 +193,61 @@ public class DashboardFragment extends Fragment {
             labels.add(g.month);
         }
 
-        LineDataSet dataSet = new LineDataSet(entries, "Net Worth");
-        dataSet.setColor(Color.parseColor("#2563EB"));
-        dataSet.setLineWidth(3f);
-        dataSet.setDrawCircles(false);
+        LineDataSet dataSet = new LineDataSet(entries, getString(R.string.net_worth));
+        int primaryColor = ContextCompat.getColor(requireContext(), R.color.primary);
+        
+        dataSet.setColor(primaryColor);
+        dataSet.setLineWidth(4f);
+        dataSet.setDrawCircles(true);
+        dataSet.setCircleColor(primaryColor);
+        dataSet.setCircleRadius(4f);
+        dataSet.setDrawCircleHole(true);
+        dataSet.setCircleHoleRadius(2f);
+        dataSet.setCircleHoleColor(Color.WHITE);
+        
         dataSet.setDrawFilled(true);
-        dataSet.setFillColor(Color.parseColor("#2563EB"));
-        dataSet.setFillAlpha(40);
+        dataSet.setFillDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.bg_gradient_chart_fill));
         dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
         dataSet.setDrawValues(false);
+        dataSet.setHighLightColor(primaryColor);
+        dataSet.setDrawHorizontalHighlightIndicator(false);
 
         chart.setData(new LineData(dataSet));
         chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
         chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
         chart.getXAxis().setGranularity(1f);
         chart.getXAxis().setDrawGridLines(false);
+        chart.getXAxis().setTextColor(ContextCompat.getColor(requireContext(), R.color.text_muted));
+        chart.getXAxis().setAxisLineColor(Color.TRANSPARENT);
+        chart.getXAxis().setYOffset(10f);
+        
         chart.getAxisLeft().setDrawGridLines(true);
+        chart.getAxisLeft().setGridColor(Color.parseColor("#08000000")); // Very subtle grid
+        chart.getAxisLeft().setTextColor(ContextCompat.getColor(requireContext(), R.color.text_muted));
+        chart.getAxisLeft().setAxisLineColor(Color.TRANSPARENT);
+        chart.getAxisLeft().setXOffset(10f);
+        chart.getAxisLeft().setValueFormatter(new com.github.mikephil.charting.formatter.ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                if (value >= 1000) return "$" + (int)(value/1000) + "k";
+                return "$" + (int)value;
+            }
+        });
+        
         chart.getAxisRight().setEnabled(false);
         chart.getDescription().setEnabled(false);
         chart.getLegend().setEnabled(false);
         chart.setTouchEnabled(true);
-        chart.setDragEnabled(false);
+        chart.setDragEnabled(true);
         chart.setScaleEnabled(false);
-        chart.animateX(800);
+        chart.setPinchZoom(false);
+        chart.setExtraOffsets(0, 0, 0, 10);
+
+        CustomMarkerView mv = new CustomMarkerView(requireContext(), R.layout.layout_chart_marker);
+        mv.setChartView(chart);
+        chart.setMarker(mv);
+
+        chart.animateX(1500);
         chart.invalidate();
     }
 
@@ -169,39 +256,80 @@ public class DashboardFragment extends Fragment {
         if (data.insights == null) return;
 
         for (DashboardData.Insight insight : data.insights) {
+            MaterialCardView rowCard = new MaterialCardView(requireContext());
+            LinearLayout.LayoutParams cardLp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            cardLp.setMargins(0, 8, 0, 8);
+            rowCard.setLayoutParams(cardLp);
+            rowCard.setRadius(getResources().getDimension(R.dimen.card_radius));
+            rowCard.setCardElevation(0f);
+            rowCard.setStrokeWidth(1);
+            rowCard.setStrokeColor(ContextCompat.getColor(requireContext(), R.color.divider_color));
+            rowCard.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.input_bg));
+
             LinearLayout row = new LinearLayout(requireContext());
             row.setOrientation(LinearLayout.HORIZONTAL);
-            row.setBackground(getResources().getDrawable(R.drawable.bg_muted_rounded, null));
-            row.setPadding(24, 20, 24, 20);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            lp.setMargins(0, 8, 0, 8);
-            row.setLayoutParams(lp);
+            row.setPadding(32, 28, 32, 28);
+            row.setGravity(android.view.Gravity.CENTER_VERTICAL);
 
-            TextView icon = new TextView(requireContext());
-            icon.setText(insight.icon);
-            icon.setTextSize(20f);
-            icon.setPadding(0, 0, 16, 0);
+            // Icon background
+            TextView iconView = new TextView(requireContext());
+            iconView.setText(insight.icon);
+            iconView.setTextSize(22f);
+            iconView.setGravity(android.view.Gravity.CENTER);
+            
+            LinearLayout.LayoutParams iconLp = new LinearLayout.LayoutParams(
+                    (int)(48 * getResources().getDisplayMetrics().density),
+                    (int)(48 * getResources().getDisplayMetrics().density));
+            iconLp.setMargins(0, 0, 24, 0);
+            iconView.setLayoutParams(iconLp);
+            
+            android.graphics.drawable.GradientDrawable iconBg = new android.graphics.drawable.GradientDrawable();
+            iconBg.setShape(android.graphics.drawable.GradientDrawable.OVAL);
+            iconBg.setColor(ContextCompat.getColor(requireContext(), R.color.white));
+            iconView.setBackground(iconBg);
+            iconView.setElevation(2f);
 
             LinearLayout textCol = new LinearLayout(requireContext());
             textCol.setOrientation(LinearLayout.VERTICAL);
+            LinearLayout.LayoutParams textLp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+            textCol.setLayoutParams(textLp);
 
             TextView title = new TextView(requireContext());
             title.setText(insight.title);
-            title.setTextSize(13f);
-            title.setTypeface(null, android.graphics.Typeface.BOLD);
-            title.setTextColor(getResources().getColor(R.color.on_surface, null));
+            title.setTextSize(14f);
+            title.setTypeface(android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.BOLD));
+            title.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_primary));
 
             TextView msg = new TextView(requireContext());
             msg.setText(insight.message);
-            msg.setTextSize(12f);
-            msg.setTextColor(getResources().getColor(R.color.muted_foreground, null));
+            msg.setTextSize(13f);
+            msg.setLineSpacing(0f, 1.2f);
+            msg.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
+            msg.setPadding(0, 4, 0, 0);
 
             textCol.addView(title);
             textCol.addView(msg);
-            row.addView(icon);
+            
+            // AI Badge
+            TextView aiBadge = new TextView(requireContext());
+            aiBadge.setText(R.string.ai_label);
+            aiBadge.setTextSize(10f);
+            aiBadge.setTypeface(null, android.graphics.Typeface.BOLD);
+            aiBadge.setTextColor(ContextCompat.getColor(requireContext(), R.color.primary));
+            aiBadge.setPadding(12, 4, 12, 4);
+            
+            android.graphics.drawable.GradientDrawable badgeBg = new android.graphics.drawable.GradientDrawable();
+            badgeBg.setCornerRadius(20f);
+            badgeBg.setColor(ContextCompat.getColor(requireContext(), R.color.primary_light));
+            aiBadge.setBackground(badgeBg);
+            
+            row.addView(iconView);
             row.addView(textCol);
-            binding.insightsContainer.addView(row);
+            row.addView(aiBadge);
+            
+            rowCard.addView(row);
+            binding.insightsContainer.addView(rowCard);
         }
     }
 
@@ -209,6 +337,7 @@ public class DashboardFragment extends Fragment {
         if (data.incomeVsExpenses == null || data.incomeVsExpenses.isEmpty()) return;
 
         BarChart chart = binding.chartIncomeExpenses;
+        chart.clear();
         List<BarEntry> incomeEntries = new ArrayList<>();
         List<BarEntry> expenseEntries = new ArrayList<>();
         List<String> labels = new ArrayList<>();
@@ -220,12 +349,12 @@ public class DashboardFragment extends Fragment {
             labels.add(ie.month);
         }
 
-        BarDataSet incomeSet = new BarDataSet(incomeEntries, "Income");
-        incomeSet.setColor(Color.parseColor("#22C55E"));
+        BarDataSet incomeSet = new BarDataSet(incomeEntries, getString(R.string.income));
+        incomeSet.setColor(ContextCompat.getColor(requireContext(), R.color.secondary));
         incomeSet.setDrawValues(false);
 
-        BarDataSet expenseSet = new BarDataSet(expenseEntries, "Expenses");
-        expenseSet.setColor(Color.parseColor("#EF4444"));
+        BarDataSet expenseSet = new BarDataSet(expenseEntries, getString(R.string.expenses));
+        expenseSet.setColor(ContextCompat.getColor(requireContext(), R.color.error));
         expenseSet.setDrawValues(false);
 
         BarData barData = new BarData(incomeSet, expenseSet);
@@ -238,12 +367,20 @@ public class DashboardFragment extends Fragment {
         chart.getXAxis().setCenterAxisLabels(true);
         chart.getXAxis().setGranularity(1f);
         chart.getXAxis().setDrawGridLines(false);
+        chart.getXAxis().setTextColor(ContextCompat.getColor(requireContext(), R.color.text_muted));
+        chart.getXAxis().setAxisLineColor(ContextCompat.getColor(requireContext(), R.color.divider_color));
+
         chart.getAxisLeft().setDrawGridLines(true);
+        chart.getAxisLeft().setGridColor(ContextCompat.getColor(requireContext(), R.color.divider_color));
+        chart.getAxisLeft().setTextColor(ContextCompat.getColor(requireContext(), R.color.text_muted));
+        chart.getAxisLeft().setAxisLineColor(Color.TRANSPARENT);
+
         chart.getAxisRight().setEnabled(false);
         chart.getDescription().setEnabled(false);
+        chart.getLegend().setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
         chart.groupBars(0f, groupSpace, barSpace);
         chart.setFitBars(true);
-        chart.animateY(800);
+        chart.animateY(1000);
         chart.invalidate();
     }
 
@@ -251,6 +388,7 @@ public class DashboardFragment extends Fragment {
         if (data.riskRadar == null || data.riskRadar.isEmpty()) return;
 
         RadarChart chart = binding.chartRadar;
+        chart.clear();
         List<RadarEntry> entries = new ArrayList<>();
         List<String> labels = new ArrayList<>();
 
@@ -259,9 +397,10 @@ public class DashboardFragment extends Fragment {
             labels.add(r.category);
         }
 
-        RadarDataSet dataSet = new RadarDataSet(entries, "Score");
-        dataSet.setColor(Color.parseColor("#06B6D4"));
-        dataSet.setFillColor(Color.parseColor("#06B6D4"));
+        RadarDataSet dataSet = new RadarDataSet(entries, getString(R.string.score));
+        int accentColor = ContextCompat.getColor(requireContext(), R.color.primary);
+        dataSet.setColor(accentColor);
+        dataSet.setFillColor(accentColor);
         dataSet.setDrawFilled(true);
         dataSet.setFillAlpha(80);
         dataSet.setLineWidth(2f);
@@ -270,15 +409,16 @@ public class DashboardFragment extends Fragment {
         chart.setData(new RadarData(dataSet));
         chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
         chart.getXAxis().setTextSize(11f);
+        chart.getXAxis().setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
         chart.getYAxis().setAxisMinimum(0f);
         chart.getYAxis().setAxisMaximum(100f);
         chart.getYAxis().setDrawLabels(false);
         chart.getDescription().setEnabled(false);
         chart.getLegend().setEnabled(false);
         chart.setWebLineWidth(1f);
-        chart.setWebColor(Color.LTGRAY);
+        chart.setWebColor(ContextCompat.getColor(requireContext(), R.color.divider_color));
         chart.setWebLineWidthInner(1f);
-        chart.setWebColorInner(Color.LTGRAY);
+        chart.setWebColorInner(ContextCompat.getColor(requireContext(), R.color.divider_color));
         chart.animateXY(800, 800);
         chart.invalidate();
     }
@@ -290,7 +430,7 @@ public class DashboardFragment extends Fragment {
         for (DashboardData.RecentActivity activity : data.recentActivity) {
             LinearLayout row = new LinearLayout(requireContext());
             row.setOrientation(LinearLayout.HORIZONTAL);
-            row.setBackground(getResources().getDrawable(R.drawable.bg_muted_rounded, null));
+            row.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_muted_rounded));
             row.setPadding(24, 20, 24, 20);
             row.setGravity(android.view.Gravity.CENTER_VERTICAL);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -300,17 +440,29 @@ public class DashboardFragment extends Fragment {
 
             // Dot indicator
             View dot = new View(requireContext());
-            int dotSize = 16;
+            int dotSize = (int) (8 * getResources().getDisplayMetrics().density);
             LinearLayout.LayoutParams dotLp = new LinearLayout.LayoutParams(dotSize, dotSize);
-            dotLp.setMargins(0, 0, 16, 0);
+            dotLp.setMargins(0, 0, 32, 0);
             dot.setLayoutParams(dotLp);
-            dot.setBackgroundResource(R.drawable.bg_circle_gradient);
+            
+            // Status-based coloring
+            int statusColor = ContextCompat.getColor(requireContext(), R.color.primary);
+            if (activity.result.toLowerCase().contains("approved") || activity.result.toLowerCase().contains("high")) {
+                statusColor = ContextCompat.getColor(requireContext(), R.color.secondary);
+            } else if (activity.result.toLowerCase().contains("rejected") || activity.result.toLowerCase().contains("risk")) {
+                statusColor = ContextCompat.getColor(requireContext(), R.color.error);
+            }
+            
+            android.graphics.drawable.GradientDrawable shape = new android.graphics.drawable.GradientDrawable();
+            shape.setShape(android.graphics.drawable.GradientDrawable.OVAL);
+            shape.setColor(statusColor);
+            dot.setBackground(shape);
 
             // Message
             TextView msg = new TextView(requireContext());
             msg.setText(activity.message);
             msg.setTextSize(13f);
-            msg.setTextColor(getResources().getColor(R.color.on_surface, null));
+            msg.setTextColor(ContextCompat.getColor(requireContext(), R.color.on_surface));
             LinearLayout.LayoutParams msgLp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
             msg.setLayoutParams(msgLp);
 
@@ -319,14 +471,14 @@ public class DashboardFragment extends Fragment {
             result.setText(activity.result);
             result.setTextSize(12f);
             result.setTypeface(null, android.graphics.Typeface.BOLD);
-            result.setTextColor(getResources().getColor(R.color.primary, null));
+            result.setTextColor(statusColor);
             result.setPadding(16, 0, 16, 0);
 
             // Time
             TextView time = new TextView(requireContext());
             time.setText(activity.time);
             time.setTextSize(11f);
-            time.setTextColor(getResources().getColor(R.color.muted_foreground, null));
+            time.setTextColor(ContextCompat.getColor(requireContext(), R.color.muted_foreground));
 
             row.addView(dot);
             row.addView(msg);

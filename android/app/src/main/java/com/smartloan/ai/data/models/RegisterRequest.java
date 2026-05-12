@@ -12,9 +12,13 @@ public class RegisterRequest {
     @SerializedName("password")
     private String password;
 
-    public RegisterRequest(String name, String email, String password) {
+    @SerializedName("phone")
+    private String phone;
+
+    public RegisterRequest(String name, String email, String password, String phone) {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.phone = phone;
     }
 }

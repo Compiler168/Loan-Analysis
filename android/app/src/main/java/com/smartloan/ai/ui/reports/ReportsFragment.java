@@ -138,11 +138,13 @@ public class ReportsFragment extends Fragment {
         MaterialCardView c = new MaterialCardView(requireContext());
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(0, 8, 0, 0); c.setLayoutParams(lp);
+        int margin = (int) (8 * getResources().getDisplayMetrics().density);
+        lp.setMargins(0, margin, 0, 0); 
+        c.setLayoutParams(lp);
         c.setRadius(getResources().getDimension(R.dimen.card_radius));
-        c.setCardElevation(4f);
-        c.setCardBackgroundColor(getResources().getColor(R.color.card_background, null));
-        c.setStrokeWidth(1);
+        c.setCardElevation(0f);
+        c.setCardBackgroundColor(getResources().getColor(R.color.surface, null));
+        c.setStrokeWidth(2);
         c.setStrokeColor(getResources().getColor(R.color.card_stroke, null));
         return c;
     }

@@ -78,7 +78,7 @@ const startServer = async () => {
   }
 
   if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
       console.log(`\n🚀 SmartLoan AI+ Backend on port ${PORT}`);
       console.log(`📡 ML Service: ${process.env.ML_SERVICE_URL || 'http://localhost:8000'}`);
       console.log(`💾 Database: ${dbConnected ? 'MongoDB Atlas' : 'In-memory fallback'}`);

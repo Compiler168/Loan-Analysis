@@ -4,11 +4,16 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
- * Simulation result from POST /api/financial/simulate
+ * Simulation result from POST /api/financial/simulate.
+ * Mirrors the JSON shape returned by the ML simulation engine.
  */
 public class SimulationResult {
 
-    public Summary summary;
+    /** Plain-text summary string returned by the ML service. */
+    public String summary;
+
+    public Trajectory baseline;
+    public Trajectory projected;
     public Comparison comparison;
 
     @SerializedName("chart_data")
@@ -16,12 +21,31 @@ public class SimulationResult {
 
     public List<Recommendation> recommendations;
 
-    public static class Summary {
-        @SerializedName("baseline_monthly_savings")
-        public double baselineMonthlySavings;
+    public static class Trajectory {
+        public List<TrajectoryPoint> trajectory;
 
-        @SerializedName("projected_monthly_savings")
-        public double projectedMonthlySavings;
+        @SerializedName("final_savings")
+        public double finalSavings;
+
+        @SerializedName("monthly_net")
+        public double monthlyNet;
+
+        @SerializedName("current_emi")
+        public double currentEmi;
+
+        @SerializedName("new_emi")
+        public double newEmi;
+    }
+
+    public static class TrajectoryPoint {
+        public int month;
+        public double savings;
+
+        @SerializedName("net_income")
+        public double netIncome;
+
+        @SerializedName("cumulative_interest")
+        public double cumulativeInterest;
     }
 
     public static class Comparison {
@@ -33,6 +57,9 @@ public class SimulationResult {
 
         @SerializedName("emi_difference")
         public double emiDifference;
+
+        @SerializedName("projection_months")
+        public int projectionMonths;
     }
 
     public static class ChartPoint {

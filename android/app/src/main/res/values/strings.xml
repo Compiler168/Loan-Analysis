@@ -1,20 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">SmartLoan AI+</string>
-    <string name="app_tagline">Intelligent Financial Advisory</string>
+    <string name="app_tagline">Next-Gen Intelligence for Financial Freedom</string>
 
     <!-- Auth -->
     <string name="login">Log In</string>
-    <string name="register">Create Account</string>
-    <string name="email">Email</string>
+    <string name="login_label">Login</string>
+    <string name="login_capital">LOGIN</string>
+    <string name="register">Register</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="email">Email Address</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="full_name">Full Name</string>
-    <string name="demo_hint">Demo: demo@smartloan.ai / demo123</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="remember_me">Remember me</string>
+    <string name="keep_me_signed_in">Keep me signed in</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="welcome_back_title">Welcome Back</string>
+    <string name="welcome_back_subtitle">Securely access your financial world</string>
+    <string name="create_account">Create Account</string>
+    <string name="join_smartloan">Join SmartLoan</string>
+    <string name="start_journey">Start your journey to financial freedom</string>
+    <string name="fill_details">Please fill in your details</string>
+    <string name="or_continue_with">OR CONTINUE WITH</string>
+    <string name="dont_have_account">Don\'t have an account? </string>
+    <string name="already_have_account">Already have an account? </string>
+    <string name="create_one">Create One</string>
     <string name="no_account">Don\'t have an account? Sign Up</string>
-    <string name="have_account">Already have an account? Log In</string>
+    <string name="have_account">Already have an account?</string>
+    <string name="terms_agreement">By continuing, you agree to our Terms of Service and Privacy Policy</string>
+    <string name="register_agreement">By clicking Register, you agree to our Terms of Use and Privacy Policy</string>
+
+    <!-- Auth Validation -->
+    <string name="email_required">Email is required</string>
+    <string name="invalid_email">Invalid email address</string>
+    <string name="password_required">Password is required</string>
+    <string name="password_too_short">Password must be at least 6 characters</string>
+    <string name="name_required">Full name is required</string>
+    <string name="phone_required">Phone number is required</string>
+    <string name="passwords_dont_match">Passwords do not match</string>
     <string name="logging_in">Logging in…</string>
     <string name="registering">Creating account…</string>
+    <string name="demo_hint">Demo: demo@smartloan.ai / demo123</string>
 
     <!-- Navigation -->
     <string name="nav_dashboard">Dashboard</string>
@@ -26,6 +54,7 @@
     <string name="nav_admin">Admin</string>
     <string name="nav_settings">Settings</string>
     <string name="nav_logout">Logout</string>
+    <string name="nav_profile">Settings</string>
 
     <!-- Dashboard -->
     <string name="dashboard_title">AI Financial Dashboard</string>
@@ -38,7 +67,12 @@
     <string name="dti_ratio">Debt-to-Income</string>
     <string name="financial_growth">Financial Growth Projection</string>
     <string name="ai_insights">AI Smart Insights</string>
+    <string name="ai_label">AI</string>
+    <string name="score">Score</string>
     <string name="income_vs_expenses">Income vs Expenses</string>
+    <string name="income">Income</string>
+    <string name="expenses">Expenses</string>
+    <string name="net_worth">Net Worth</string>
     <string name="risk_radar">Risk Radar Analysis</string>
     <string name="recent_activity">Recent Activity</string>
 
@@ -127,6 +161,13 @@
     <string name="settings_title">Settings</string>
     <string name="settings_subtitle">Account &amp; preferences</string>
     <string name="profile">Profile</string>
+    <string name="personal_info">Personal Information</string>
+    <string name="documents">Documents</string>
+    <string name="upload_docs">Upload Documents</string>
+    <string name="report_download">Report Download</string>
+    <string name="download_financial_report">Download Financial Report</string>
+    <string name="security">Security</string>
+    <string name="change_password">Change Password</string>
     <string name="appearance">Appearance</string>
     <string name="notifications">Notifications</string>
     <string name="save_changes">Save Changes</string>
@@ -143,6 +184,13 @@
     <string name="next">Next</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
-    <string name="welcome_back">Welcome back</string>
-    <string name="no_data">No data available</string>
+    <string name="skip">Skip</string>
+    <string name="onboarding_welcome">WELCOME TO SMARTLOAN</string>
+    <string name="onboarding_title_1">AI LOAN PREDICTIONS</string>
+    <string name="onboarding_desc_1">Get instant and accurate loan approval predictions powered by advanced machine learning models.</string>
+    <string name="onboarding_title_2">SMART ADVISOR</string>
+    <string name="onboarding_desc_2">Interact with our intelligent chatbot to receive personalized financial advice and smart saving tips.</string>
+    <string name="onboarding_title_3">SECURE ANALYSIS</string>
+    <string name="onboarding_desc_3">Your data is protected with enterprise-grade security. Join thousands of users trusting SmartLoan AI+.</string>
+    <string name="get_started">Get Started</string>
 </resources>

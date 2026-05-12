@@ -57,4 +57,8 @@ public final class ViewUtils {
     public static String formatPercentage(double value) {
         return String.format("%.1f%%", value);
     }
+
+    public static float dpToPx(Context context, float dp) {
+        return dp * context.getResources().getDisplayMetrics().density;
+    }
 }

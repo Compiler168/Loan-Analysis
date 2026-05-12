@@ -7,6 +7,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.smartloan.ai.R;
 import com.smartloan.ai.databinding.ActivityLoginBinding;
 import com.smartloan.ai.ui.main.MainActivity;
 import com.smartloan.ai.utils.TokenManager;
@@ -34,8 +35,26 @@ public class LoginActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
+        startEnterAnimations();
         setupObservers();
         setupListeners();
+    }
+
+    private void startEnterAnimations() {
+        binding.ivLogo.setAlpha(0f);
+        binding.tvWelcome.setAlpha(0f);
+        binding.tvSubtitle.setAlpha(0f);
+        binding.cardLogin.setAlpha(0f);
+        
+        binding.ivLogo.setTranslationY(-50f);
+        binding.tvWelcome.setTranslationY(-30f);
+        binding.tvSubtitle.setTranslationY(-20f);
+        binding.cardLogin.setTranslationY(100f);
+
+        binding.ivLogo.animate().alpha(1f).translationY(0).setDuration(800).setStartDelay(200).start();
+        binding.tvWelcome.animate().alpha(1f).translationY(0).setDuration(800).setStartDelay(400).start();
+        binding.tvSubtitle.animate().alpha(1f).translationY(0).setDuration(800).setStartDelay(500).start();
+        binding.cardLogin.animate().alpha(1f).translationY(0).setDuration(1000).setStartDelay(600).start();
     }
 
     private void setupObservers() {
@@ -53,8 +72,7 @@ public class LoginActivity extends AppCompatActivity {
                 );
                 navigateToMain();
             } else {
-                binding.tvError.setVisibility(View.VISIBLE);
-                binding.tvError.setText(result.getError());
+                showError(result.getError());
             }
         });
     }
@@ -64,30 +82,31 @@ public class LoginActivity extends AppCompatActivity {
             String email = binding.etEmail.getText().toString().trim();
             String password = binding.etPassword.getText().toString().trim();
 
-            // Validation
+            boolean isValid = true;
+
             if (email.isEmpty()) {
-                binding.tilEmail.setError("Email is required");
-                return;
+                binding.tilEmail.setError(getString(R.string.email_required));
+                isValid = false;
+            } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                binding.tilEmail.setError(getString(R.string.invalid_email));
+                isValid = false;
+            } else {
+                binding.tilEmail.setError(null);
             }
-            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                binding.tilEmail.setError("Invalid email format");
-                return;
-            }
+
             if (password.isEmpty()) {
-                binding.tilPassword.setError("Password is required");
-                return;
-            }
-            if (password.length() < 6) {
-                binding.tilPassword.setError("Minimum 6 characters");
-                return;
+                binding.tilPassword.setError(getString(R.string.password_required));
+                isValid = false;
+            } else if (password.length() < 6) {
+                binding.tilPassword.setError(getString(R.string.password_too_short));
+                isValid = false;
+            } else {
+                binding.tilPassword.setError(null);
             }
 
-            // Clear errors
-            binding.tilEmail.setError(null);
-            binding.tilPassword.setError(null);
-            binding.tvError.setVisibility(View.GONE);
+            if (!isValid) return;
 
-            // Show loading
+            hideError();
             binding.progressBar.setVisibility(View.VISIBLE);
             binding.btnLogin.setEnabled(false);
 
@@ -96,13 +115,42 @@ public class LoginActivity extends AppCompatActivity {
 
         binding.tvRegister.setOnClickListener(v -> {
             startActivity(new Intent(this, RegisterActivity.class));
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
+
+        binding.tvForgotPassword.setOnClickListener(v -> {
+            // Placeholder for Forgot Password
+        });
+
+        binding.btnGoogle.setOnClickListener(v -> {
+            // Placeholder for Google Login
+        });
+
+        binding.btnFacebook.setOnClickListener(v -> {
+            // Placeholder for Facebook Login
+        });
+
+        binding.btnLinkedIn.setOnClickListener(v -> {
+            // Placeholder for LinkedIn Login
+        });
+    }
+
+    private void showError(String message) {
+        binding.tvError.setText(message);
+        binding.cardError.setVisibility(View.VISIBLE);
+        binding.cardError.setAlpha(0f);
+        binding.cardError.animate().alpha(1f).setDuration(300).start();
+    }
+
+    private void hideError() {
+        binding.cardError.setVisibility(View.GONE);
     }
 
     private void navigateToMain() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         finish();
     }
 }
