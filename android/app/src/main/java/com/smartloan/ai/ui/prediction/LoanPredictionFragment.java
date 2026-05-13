@@ -14,6 +14,14 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.content.ContentValues;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -129,12 +137,94 @@ public class LoanPredictionFragment extends Fragment {
         });
 
         binding.btnSaveResult.setOnClickListener(v -> {
-            ViewUtils.showSuccessSnackbar(binding.getRoot(), "Prediction result saved successfully!");
+            savePredictionResult();
         });
 
         binding.btnDownloadReport.setOnClickListener(v -> {
-            ViewUtils.showSuccessSnackbar(binding.getRoot(), "Generating PDF report...");
+            savePredictionResult();
         });
+    }
+
+    private void savePredictionResult() {
+        if (viewModel.getResult().getValue() == null) {
+            ViewUtils.showErrorSnackbar(binding.getRoot(), "No result to save.");
+            return;
+        }
+        PredictionResult data = viewModel.getResult().getValue();
+        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String filename = "SmartLoan_Report_" + timestamp + ".txt";
+        String content = formatResultAsText(data);
+        downloadReport(filename, content);
+    }
+
+    private void downloadReport(String filename, String content) {
+        try {
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.MediaColumns.DISPLAY_NAME, filename);
+            values.put(MediaStore.MediaColumns.MIME_TYPE, "text/plain");
+            values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
+
+            Uri uri = requireContext().getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
+            if (uri != null) {
+                try (OutputStream os = requireContext().getContentResolver().openOutputStream(uri)) {
+                    os.write(content.getBytes());
+                }
+                ViewUtils.showSuccessSnackbar(binding.getRoot(), "Report saved to Downloads: " + filename);
+            } else {
+                ViewUtils.showErrorSnackbar(binding.getRoot(), "Failed to create file in Downloads.");
+            }
+        } catch (Exception e) {
+            ViewUtils.showErrorSnackbar(binding.getRoot(), "Error saving report: " + e.getMessage());
+        }
+    }
+
+    private String formatResultAsText(PredictionResult data) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("====================================\n");
+        sb.append("   SMARTLOAN AI+ PREDICTION REPORT   \n");
+        sb.append("====================================\n\n");
+
+        sb.append("Date: ").append(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date())).append("\n\n");
+
+        boolean approved = data.ensemble.approved;
+        double prob = data.ensemble.probability * 100;
+        
+        sb.append("--- PREDICTION RESULT ---\n");
+        sb.append("Status: ").append(approved ? "Likely Approved" : "Likely Rejected").append("\n");
+        sb.append(String.format(Locale.getDefault(), "Approval Probability: %.1f%%\n", prob));
+        sb.append(String.format(Locale.getDefault(), "AI Confidence Score: %.1f%%\n\n", data.ensemble.confidenceScore * 100));
+
+        if (data.derivedMetrics != null) {
+            sb.append("--- FINANCIAL METRICS ---\n");
+            sb.append(String.format(Locale.getDefault(), "Debt-to-Income (DTI): %.1f%%\n", data.derivedMetrics.dtiRatio * 100));
+            sb.append(String.format(Locale.getDefault(), "Savings Ratio: %.1f%%\n", data.derivedMetrics.savingsRatio * 100));
+            sb.append(String.format(Locale.getDefault(), "Requested EMI: $%,.2f\n\n", data.derivedMetrics.requestedEmi));
+        }
+
+        if (data.riskReasons != null && !data.riskReasons.isEmpty()) {
+            sb.append("--- RISK FACTORS ---\n");
+            for (PredictionResult.RiskReason r : data.riskReasons) {
+                sb.append("• ").append(r.factor).append(": ").append(r.message).append("\n");
+                sb.append("  Suggestion: ").append(r.suggestion).append("\n");
+            }
+            sb.append("\n");
+        }
+
+        if (data.topFactors != null && !data.topFactors.isEmpty()) {
+            sb.append("--- KEY INFLUENCERS ---\n");
+            for (java.util.Map.Entry<String, Double> entry : data.topFactors.entrySet()) {
+                String label = entry.getKey().replace("_", " ");
+                double value = entry.getValue() * 100;
+                sb.append(String.format(Locale.getDefault(), "• %s: %s%.1f%%\n", label, (value >= 0 ? "+" : ""), value));
+            }
+            sb.append("\n");
+        }
+
+        sb.append("====================================\n");
+        sb.append("   Generated by SmartLoan AI+ App   \n");
+        sb.append("====================================\n");
+
+        return sb.toString();
     }
 
     private void submitPrediction() {

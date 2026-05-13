@@ -86,7 +86,7 @@ def main():
     print("=" * 60)
 
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    data_path = os.path.join(base_dir, '..', 'data', 'loan_dataset.csv')
+    data_path = os.path.join(base_dir, '..', '..', 'eda', 'data', 'raw', 'loan_dataset.csv')
     models_dir = os.path.join(base_dir, '..', 'models')
     os.makedirs(models_dir, exist_ok=True)
 

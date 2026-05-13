@@ -105,9 +105,6 @@ smartloan-ai-mobile/
 │   │   ├── lr_model.pkl                     # Logistic regression
 │   │   └── model_metadata.json              # Model info & versions
 │   │
-│   ├── data/
-│   │   └── loan_dataset.csv                 # Training dataset (12K samples)
-│   │
 │   ├── training/                            # Model training scripts
 │   │   ├── train_models.py                  # Model training pipeline
 │   │   └── generate_data.py                 # Synthetic data generation
@@ -127,6 +124,13 @@ smartloan-ai-mobile/
 │       ├── PORT=8000
 │       └── LOG_LEVEL=INFO
 │
+├── 📊 eda/                        # Exploratory Data Analysis
+│   ├── data/
+│   │   ├── raw/
+│   │   │   └── loan_dataset.csv             # Training dataset (12K samples)
+│   │   └── cleaned/                         # Processed modeling data
+│   └── analysis/                            # EDA notebooks and reports
+│
 ├── 📖 README.md                   # Complete project documentation
 │   ├── Architecture overview (3-tier)
 │   ├── Technology stack details
@@ -138,14 +142,6 @@ smartloan-ai-mobile/
 │   ├── Environment variables
 │   ├── Troubleshooting guide
 │   └── Support & licensing
-│
-├── 📋 CLEANUP_SUMMARY.md          # Cleanup documentation
-│   ├── Removed components
-│   ├── Optimizations made
-│   ├── Dependency analysis
-│   ├── Before/after comparison
-│   ├── Production checklist
-│   └── Migration guide
 │
 ├── .gitignore                     # Git ignore patterns
 │   ├── node_modules/

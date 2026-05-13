@@ -197,8 +197,6 @@ smartloan-ai-mobile/
 │   │   ├── rf_model.pkl                     # Random forest model
 │   │   ├── lr_model.pkl                     # Logistic regression
 │   │   └── model_metadata.json
-│   ├── data/
-│   │   └── loan_dataset.csv                 # Training dataset (12K samples)
 │   ├── training/
 │   │   ├── train_models.py
 │   │   └── generate_data.py
@@ -206,6 +204,13 @@ smartloan-ai-mobile/
 │   │   └── test_engines.py
 │   ├── Dockerfile                           # Container configuration
 │   └── render.yaml                          # Deployment configuration
+│
+├── eda/                        # Exploratory Data Analysis
+│   ├── data/
+│   │   ├── raw/
+│   │   │   └── loan_dataset.csv             # Training dataset (12K samples)
+│   │   └── cleaned/
+│   └── analysis/                            # EDA scripts and reports
 │
 ├── README.md                   # Project documentation (this file)
 └── .gitignore
@@ -805,13 +810,18 @@ SmartLoan-AI/
 │   │   ├── label_encoder.pkl
 │   │   ├── feature_columns.pkl
 │   │   └── model_metadata.json
-│   ├── data/
-│   │   └── loan_dataset.csv     # 12,000 samples (~1.4 MB)
 │   ├── tests/
 │   │   └── test_engines.py      # Pytest test suite
 │   ├── Dockerfile               # Docker containerization
 │   ├── render.yaml              # Render.com deployment
 │   └── requirements.txt
+│
+├── eda/                         # Exploratory Data Analysis
+│   ├── data/
+│   │   ├── raw/
+│   │   │   └── loan_dataset.csv # 12,000 samples (~1.4 MB)
+│   │   └── cleaned/             # Cleaned data ready for modeling
+│   └── analysis/                # EDA scripts and visual reports
 │
 ├── android/                     # Android Companion App
 │   ├── app/

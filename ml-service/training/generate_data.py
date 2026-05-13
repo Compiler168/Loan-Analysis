@@ -145,7 +145,7 @@ def generate_financial_data(n_samples: int = 12000, seed: int = 42) -> pd.DataFr
 
 if __name__ == '__main__':
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    data_dir = os.path.join(base_dir, '..', 'data')
+    data_dir = os.path.join(base_dir, '..', '..', 'eda', 'data', 'raw')
     os.makedirs(data_dir, exist_ok=True)
     df = generate_financial_data(12000)
     path = os.path.join(data_dir, 'loan_dataset.csv')

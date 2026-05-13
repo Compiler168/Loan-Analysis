@@ -1,5 +1,7 @@
 package com.smartloan.ai.utils;
 
+import com.smartloan.ai.BuildConfig;
+
 /**
  * Application-wide constants for SmartLoan AI+.
  */
@@ -10,7 +12,7 @@ public final class Constants {
     // API Configuration
     // For Android emulator: 10.0.2.2 maps to host machine's localhost
     // For physical device: use your machine's local IP or deployed URL
-    public static final String BASE_URL = "http://192.168.2.108:5000/api/";
+    public static final String BASE_URL = BuildConfig.API_BASE_URL;
 
     // SharedPreferences
     public static final String PREFS_NAME = "smartloan_prefs";
