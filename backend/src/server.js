@@ -13,15 +13,8 @@ const PORT = process.env.PORT || 5000;
 
 // Security
 app.use(helmet());
-// Mobile app CORS (configured for local WiFi network + localhost)
 app.use(cors({ 
-  origin: process.env.MOBILE_ORIGINS?.split(',') || [
-    'http://localhost:5000',
-    'http://localhost:8000',
-    'http://127.0.0.1:5000',
-    'http://192.168.2.108:5000',  // Laptop IP
-    'http://192.168.2.110:5000'   // Mobile IP
-  ],
+  origin: process.env.MOBILE_ORIGINS?.split(',') || '*',
   credentials: true 
 }));
 app.use(express.json({ limit: '10mb' }));
@@ -31,7 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/', rateLimit({ windowMs: 15 * 60 * 1000, max: 200, message: { error: 'Too many requests' } }));
 const aiLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 50, message: { error: 'AI rate limit reached' } });
 
-// Routes - Mobile App APIs
+// Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/loans', aiLimiter, require('./routes/loans'));
 app.use('/api/financial', aiLimiter, require('./routes/financial'));
@@ -49,19 +42,22 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// 404 handler
+app.use((req, res) => res.status(404).json({ success: false, error: 'Endpoint not found' }));
+
 // Error handler
 app.use((err, req, res, next) => {
-  console.error('Error:', err.message);
-  res.status(err.status || 500).json({ success: false, error: process.env.NODE_ENV === 'production' ? 'Internal error' : err.message });
+  console.error('Unhandled Error:', err.stack);
+  res.status(err.status || 500).json({ 
+    success: false, 
+    error: process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message 
+  });
 });
 
-app.use((req, res) => res.status(404).json({ success: false, error: 'Not found' }));
-
-// Start server with DB connection
+// Start server
 const startServer = async () => {
   const dbConnected = await connectDB();
 
-  // Seed demo user if DB is connected and no users exist
   if (dbConnected) {
     try {
       const User = require('./models/User');
@@ -86,14 +82,11 @@ const startServer = async () => {
     }
   }
 
-  if (!process.env.VERCEL) {
-    app.listen(PORT, '0.0.0.0', () => {
-      console.log(`\n🚀 SmartLoan AI+ Backend on port ${PORT}`);
-      console.log(`📡 ML Service: ${process.env.ML_SERVICE_URL || 'http://localhost:8000'}`);
-      console.log(`💾 Database: ${dbConnected ? 'MongoDB Atlas' : 'In-memory fallback'}`);
-      console.log(`🔗 API: http://localhost:${PORT}/api\n`);
-    });
-  }
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`\n🚀 SmartLoan AI+ Backend running on port ${PORT}`);
+    console.log(`📡 ML Service: ${process.env.ML_SERVICE_URL || 'http://localhost:8000'}`);
+    console.log(`💾 Database: ${dbConnected ? 'MongoDB Atlas' : '⚠️ DISCONNECTED'}\n`);
+  });
 };
 
 startServer();
