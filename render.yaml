@@ -16,6 +16,10 @@ services:
         value: "https://smartloan-ml-service.onrender.com"
       - key: MOBILE_ORIGINS
         value: "https://smartloan-backend.onrender.com,http://localhost:5000"
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
 
   - type: web
     name: smartloan-ml-service
