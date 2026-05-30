@@ -14,6 +14,9 @@ ml-service/data/*.csv
 *.pem
 *.key
 serviceAccountKey.json
+backend/firebase-key.json
+loan-9e495-firebase-adminsdk-fbsvc-97db8bb313.json
+android/app/google-services.json
 
 # Build
 .next/
