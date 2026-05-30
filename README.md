@@ -575,28 +575,58 @@ ML service listens on `http://localhost:8000`.
 
 ---
 
-## Cleanup Report
+## EDA (Exploratory Data Analysis)
 
-### Completed cleanup actions
-- Removed stale Vercel deployment wrapper and config files from the repository
-- Removed generated local artifacts: `node_modules`, Python `venv`, Android build directories, IDE caches
-- Removed orphaned serverless wrapper under `api/`
-- Updated `.gitignore` to protect local secrets and credential files
-- Preserved production-ready app code in `android/`, `backend/`, and `ml-service/`
+### EDA Overview
+The Exploratory Data Analysis (EDA) section documents how the loan dataset was inspected, cleaned, and analyzed prior to model training. All EDA artifacts, scripts, and visualizations are located under the `ml/eda/` folder.
 
-### Notes
-- Credentials such as `backend/firebase-key.json`, `android/app/google-services.json`, and the service account JSON remain local and ignored
-- The repo now reflects a clean split between Android Java app, backend API, and ML microservice
+### Objectives
+- Understand dataset composition and distributions
+- Identify and handle missing values and outliers
+- Explore relationships between features and the target
+- Inform feature engineering and model selection
+
+### Dataset Understanding
+- Source: `ml/eda/data/raw/loan_dataset.csv`
+- Target: `approved` (binary) or an approval probability produced during model training
+- Typical fields: age, monthly_income, monthly_expenses, credit_score, existing_loans, existing_emi, loan_amount, loan_term_months, interest_rate, savings_balance, missed_payments_last_year, bankruptcies
+
+### Data Distribution Analysis
+- Visualized numeric feature distributions (histograms and density plots) to inspect skew and modality.
+- Examined categorical feature counts and low-frequency categories.
+
+### Missing Value Analysis
+- Identified missingness patterns and decided on imputation strategies (median for skewed numeric fields, mode for categorical fields).
+- Documented missing-value thresholds and actions in `ml/eda/analysis/eda_report.md`.
+
+### Feature Correlation Analysis
+- Computed Pearson/Spearman correlations and visualized via heatmap (`ml/eda/analysis/correlation_heatmap.png`).
+- Inspected multicollinearity and used domain-driven feature selection to remove redundant features.
+
+### Key Insights and Findings
+- Debt-to-Income ratio (derived feature) strongly correlates with rejection probability.
+- Low credit score and missed payments are high-severity risk signals.
+- Requested EMI and existing EMI together indicate overall repayment burden; models improved after deriving `total_emi_burden` and `requested_emi`.
+
+### Visualizations Used
+- Histograms, boxplots, KDE plots for distributions
+- Correlation heatmaps for feature interactions
+- Scatter plots for bivariate relationships (e.g., credit score vs approval rate)
+
+### Impact of EDA on Model Development
+- New derived features (DTI, requested EMI, savings ratio, loan-to-income) improved model performance and interpretability.
+- Addressed class imbalance and informed sampling strategy for training.
+- EDA findings are summarized in `ml/eda/analysis/eda_report.md` and code in `ml/eda/analysis/data_cleaning.py`.
 
 ---
 
 ## Optimization Report
 
 ### Key improvements
-- Simplified deployment path by removing unused Vercel wrappers
-- Centralized API route definitions and Firestore model access
+- Simplified repository layout: `frontend/`, `backend/`, `ml/` to improve discoverability and maintainability
+- Centralized EDA under `ml/eda/` and model artifacts under `ml/models/`
 - Preserved Docker-ready service definitions for backend and ML service
-- Maintained GitHub Actions pipeline for CI, image publishing, and Fly.io deployment
+- Maintained CI pipeline while removing unnecessary deployment wrappers
 - Improved security posture with explicit ignore rules for secrets
 
 ---
@@ -608,7 +638,6 @@ ML service listens on `http://localhost:8000`.
 - Firestore-backed backend with secure JWT auth
 - AI chatbot and financial simulation engine
 - CI/CD with GitHub Actions and Docker
-
 ---
 
 ## Contributing Guidelines

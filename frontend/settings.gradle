@@ -1,0 +1,3 @@
+// SmartLoan AI+ Android
+rootProject.name = 'SmartLoanAI'
+include ':app'

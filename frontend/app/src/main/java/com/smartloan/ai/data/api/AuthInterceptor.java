@@ -1,0 +1,40 @@
+package com.smartloan.ai.data.api;
+
+import androidx.annotation.NonNull;
+
+import com.smartloan.ai.utils.TokenManager;
+
+import java.io.IOException;
+
+import okhttp3.Interceptor;
+import okhttp3.Request;
+import okhttp3.Response;
+
+/**
+ * OkHttp interceptor that adds JWT Bearer token to all API requests.
+ */
+public class AuthInterceptor implements Interceptor {
+
+    private final TokenManager tokenManager;
+
+    public AuthInterceptor(TokenManager tokenManager) {
+        this.tokenManager = tokenManager;
+    }
+
+    @NonNull
+    @Override
+    public Response intercept(@NonNull Chain chain) throws IOException {
+        Request original = chain.request();
+
+        String token = tokenManager.getToken();
+        if (token != null && !token.isEmpty()) {
+            Request authorized = original.newBuilder()
+                    .header("Authorization", "Bearer " + token)
+                    .header("Content-Type", "application/json")
+                    .build();
+            return chain.proceed(authorized);
+        }
+
+        return chain.proceed(original);
+    }
+}
