@@ -74,7 +74,7 @@ smartloan-ai-mobile/
 │       ├── ML_SERVICE_URL=http://localhost:8000
 │       └── MOBILE_ORIGINS=<comma-separated-urls>
 │
-├── 🤖 ml-service/                 # FastAPI ML Service (Python)
+├── 🤖 ml/                 # FastAPI ML Service (Python)
 │   ├── main.py                              # FastAPI app entry point
 │   │   ├── CORS for mobile (flexible)
 │   │   ├── Request validation (Pydantic)
@@ -193,7 +193,7 @@ Backend (Express)
     ↓
 [Validate input, forward to ML service]
     ↓
-POST http://ml-service:8000/predict
+POST http://ml:8000/predict
     ↓
 ML Service (FastAPI)
     ↓
@@ -222,7 +222,7 @@ Backend (Express)
     ↓
 [Forward to ML service with conversation context]
     ↓
-POST http://ml-service:8000/chat
+POST http://ml:8000/chat
     ↓
 ML Service (NLP Engine - NLTK)
     ↓

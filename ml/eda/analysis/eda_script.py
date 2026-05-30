@@ -7,7 +7,7 @@ import base64
 from io import BytesIO
 
 # Configure paths
-data_path = r"c:\Users\Majid Wandar\Desktop\Loan\ml-service\data\loan_dataset.csv"
+data_path = r"c:\Users\Majid Wandar\Desktop\Loan\ml\eda\data\raw\loan_dataset.csv"
 output_dir = r"C:\Users\Majid Wandar\.gemini\antigravity\artifacts"
 os.makedirs(output_dir, exist_ok=True)
 report_path = os.path.join(output_dir, "eda_report.md")

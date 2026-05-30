@@ -164,7 +164,7 @@ Firebase Firestore Database
 - Processing Logic: Intent classification and contextual response generation.
 - Outputs: conversational reply and session logging.
 - Benefits: Natural advice flow with fintech intelligence.
-- Implementation: `ChatController.sendMessage`, `ml-service/services/nlp_engine.py`
+- Implementation: `ChatController.sendMessage`, `ml/services/nlp_engine.py`
 
 ### AI Features
 
@@ -242,7 +242,7 @@ Firebase Firestore Database
 Loan/
 │
 ├── 📱 FRONTEND LAYER
-│   └── frontend/                       # Android Application (Java + Gradle)
+│   └── android/                       # Android Application (Java + Gradle)
 │       ├── app/
 │       │   ├── build.gradle            # App build configuration
 │       │   ├── google-services.json    # Firebase config (local only)
@@ -375,7 +375,7 @@ Loan/
 ```
 
 ### Folder Details
-- **`frontend/`**: Android Application source in Java, resources, and Gradle build system.
+- **`android/`**: Android Application source in Java, resources, and Gradle build system.
 - **`backend/`**: Express.js REST API, Firestore integration, security middleware, and ML service gateway.
 - **`ml/`**: Python FastAPI ML microservice with data, training, models, and prediction engines.
   - **`ml/eda/`**: Complete data pipeline from raw → cleaned → analyzed → visualized.
@@ -859,7 +859,7 @@ ML service listens on `http://localhost:8000`.
 ## Optimization Report
 
 ### Key improvements
-- Simplified repository layout: `frontend/`, `backend/`, `ml/` to improve discoverability and maintainability
+- Simplified repository layout: `android/`, `backend/`, `ml/` to improve discoverability and maintainability
 - Centralized EDA under `ml/eda/` and model artifacts under `ml/models/`
 - Preserved Docker-ready service definitions for backend and ML service
 - Maintained CI pipeline while removing unnecessary deployment wrappers
@@ -883,13 +883,13 @@ Contributions should follow these rules:
 - Document new features in README or architecture docs
 - Add tests for backend and ML service changes
 - Avoid committing credentials or local environment files
-- Maintain consistent code organization within `frontend/`, `backend/`, and `ml/`
+- Maintain consistent code organization within `android/`, `backend/`, and `ml/`
 
 ---
 
 ## Developer Notes
 
-- The Android Application is the primary user experience layer (located in `frontend/`).
+- The Android Application is the primary user experience layer (located in `android/`).
 - The backend handles auth, persistence, and ML service orchestration (located in `backend/`).
 - The ML service is a standalone FastAPI app designed to be deployed independently (located in `ml/`).
 - EDA pipeline, data, and model artifacts are organized under `ml/eda/` and `ml/models/`.

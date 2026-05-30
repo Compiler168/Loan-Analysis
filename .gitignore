@@ -5,8 +5,7 @@ __pycache__/
 *.pyc
 
 # ML artifacts (large binary files)
-ml-service/models/*.pkl
-ml-service/data/*.csv
+ml/models/*.pkl
 
 # Environment
 .env

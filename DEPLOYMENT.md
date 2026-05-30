@@ -29,7 +29,7 @@ MOBILE_ORIGINS=http://10.0.2.2:5000,http://localhost:5000
 
 ### ML Service (.env File)
 ```bash
-# Create file: ml-service/.env
+# Create file: ml/.env
 
 # Python Configuration
 PYTHONUNBUFFERED=1
@@ -69,7 +69,7 @@ npm run dev
 ### ML Service Development Start
 ```bash
 # Create virtual environment
-cd ml-service
+cd ml
 python -m venv venv
 
 # Activate venv
@@ -139,7 +139,7 @@ git push  # Auto-deploys on push to main branch
    - NODE_ENV=production
    - MONGODB_URI=...
    - JWT_SECRET=...
-   - ML_SERVICE_URL=https://ml-service-name.onrender.com
+   - ML_SERVICE_URL=https://ml-name.onrender.com
    - MOBILE_ORIGINS=https://android-app.com
 6. Deploy!
 ```
@@ -148,7 +148,7 @@ git push  # Auto-deploys on push to main branch
 ```
 1. Go to Render.com
 2. Create New Web Service
-3. Connect GitHub repository (ml-service)
+3. Connect GitHub repository (ml)
 4. Build Command: pip install -r requirements.txt
 5. Start Command: uvicorn main:app --host 0.0.0.0 --port 8000
 6. Set Environment Variables
@@ -172,7 +172,7 @@ git push heroku main
 
 #### ML Service Setup
 ```bash
-# Create Procfile in ml-service/
+# Create Procfile in ml/
 echo "web: uvicorn main:app --host 0.0.0.0 --port \$PORT" > Procfile
 
 heroku create smartloan-ml
@@ -202,7 +202,7 @@ CMD ["npm", "start"]
 
 ### ML Service Dockerfile (Already Included)
 ```dockerfile
-# ml-service/Dockerfile already exists
+# ml/Dockerfile already exists
 FROM python:3.9-slim
 
 WORKDIR /app
@@ -229,13 +229,13 @@ services:
       - "5000:5000"
     environment:
       - MONGODB_URI=mongodb://mongo:27017/smartloan
-      - ML_SERVICE_URL=http://ml-service:8000
+      - ML_SERVICE_URL=http://ml:8000
     depends_on:
       - mongo
-      - ml-service
+      - ml
 
-  ml-service:
-    build: ./ml-service
+  ml:
+    build: ./ml
     ports:
       - "8000:8000"
 
@@ -439,7 +439,7 @@ npm update          # Update to latest compatible versions
 npm audit fix       # Security updates
 
 # ML Service
-cd ml-service
+cd ml
 pip list --outdated
 pip install --upgrade <package-name>
 ```
@@ -447,7 +447,7 @@ pip install --upgrade <package-name>
 ### Model Retraining
 ```bash
 # Periodic retraining (monthly/quarterly)
-cd ml-service
+cd ml
 python training/train_models.py
 
 # Validate model performance
