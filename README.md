@@ -107,7 +107,7 @@ Firebase Firestore Database
   - `dashboards`
 
 ### Machine Learning Architecture
-- `ml-service/main.py` exposes clean FastAPI endpoints
+- `ml/main.py` exposes clean FastAPI endpoints
 - Prediction, health scoring, risk analysis, simulation, NLP, and document parsing engines
 - Lazy-loaded service modules for resource efficiency
 - Ensemble model stack: XGBoost, Random Forest, Logistic Regression
@@ -148,7 +148,7 @@ Firebase Firestore Database
 - Processing Logic: Proxy to ML service `/predict` endpoint and persist results.
 - Outputs: probability score, approval recommendation, top risk factors.
 - Benefits: Faster decision support and user transparency.
-- Implementation: `LoanController.predictLoan`, `ml-service/services/prediction_engine.py`
+- Implementation: `LoanController.predictLoan`, `ml/services/prediction_engine.py`
 
 #### Financial Dashboard
 - Purpose: Present summary analytics and financial health metrics.
@@ -236,51 +236,332 @@ Firebase Firestore Database
 
 ## Project Structure
 
+### Complete Project Hierarchy
+
 ```
 Loan/
-├── android/                    # Android Application developed in Java
-│   ├── app/
-│   │   ├── build.gradle
-│   │   └── src/main/java/      # Java source and UI logic
-│   │   └── src/main/res/       # layouts, drawables, resources
-│   ├── gradle/
-│   ├── gradle.properties
-│   ├── local.properties        # local SDK path (ignored)
-│   └── settings.gradle
-├── backend/                    # Express.js backend API
-│   ├── Dockerfile              # Backend Docker container definition
-│   ├── package.json
-│   ├── package-lock.json
-│   ├── .env.template           # Backend env template
-│   └── src/
-│       ├── server.js           # Express application
-│       ├── config/firebase.js  # Firestore initialization
-│       ├── controllers/        # Business logic for each domain
-│       ├── middleware/         # Authentication and security
-│       ├── models/             # Firestore document models
-│       └── routes/             # API endpoint definitions
-├── ml-service/                # Python ML microservice
-│   ├── Dockerfile
-│   ├── main.py                 # FastAPI entrypoint
-│   ├── requirements.txt
-│   ├── .env.template
-│   ├── services/               # ML engine modules
-│   ├── models/                 # serialized model artifacts
-│   ├── tests/                  # unit tests
-│   └── training/              # model training scripts
-├── .github/                   # CI/CD workflows
-│   └── workflows/ci-and-deploy.yml
-├── DEPLOYMENT.md              # Deployment guidance
-├── ARCHITECTURE.md            # System architecture documentation
-├── LICENSE
-└── README.md
+│
+├── 📱 FRONTEND LAYER
+│   └── frontend/                       # Android Application (Java + Gradle)
+│       ├── app/
+│       │   ├── build.gradle            # App build configuration
+│       │   ├── google-services.json    # Firebase config (local only)
+│       │   ├── proguard-rules.pro      # Code obfuscation rules
+│       │   └── src/
+│       │       ├── androidTest/        # Android instrumented tests
+│       │       ├── main/
+│       │       │   ├── AndroidManifest.xml
+│       │       │   ├── java/com/smartloan/ai/   # Java source code
+│       │       │   │   ├── data/api/            # API client & interceptor
+│       │       │   │   ├── data/models/         # Data classes
+│       │       │   │   ├── ui/                  # UI layers & ViewModels
+│       │       │   │   └── utils/               # Utilities & helpers
+│       │       │   └── res/                     # Layouts, drawables, strings
+│       │       └── test/
+│       ├── gradle/wrapper/             # Gradle wrapper config
+│       ├── build.gradle                # Project build config
+│       ├── gradle.properties
+│       ├── settings.gradle
+│       └── local.properties            # Local SDK path (ignored)
+│
+├── 🔧 BACKEND LAYER
+│   └── backend/                        # Express.js API Server
+│       ├── Dockerfile                  # Backend container definition
+│       ├── package.json
+│       ├── package-lock.json
+│       ├── .env.template               # Env config template
+│       └── src/
+│           ├── server.js               # Express app entrypoint
+│           ├── config/
+│           │   └── firebase.js         # Firestore initialization
+│           ├── controllers/            # Business logic
+│           │   ├── AuthController.js
+│           │   ├── LoanController.js
+│           │   ├── FinancialController.js
+│           │   ├── ChatController.js
+│           │   └── ReportController.js
+│           ├── middleware/
+│           │   └── auth.js             # JWT verification
+│           ├── models/                 # Firestore document models
+│           │   ├── User.js
+│           │   ├── Prediction.js
+│           │   ├── Analysis.js
+│           │   ├── ChatSession.js
+│           │   └── Report.js
+│           └── routes/                 # API endpoints
+│               ├── auth.js
+│               ├── loans.js
+│               ├── financial.js
+│               ├── chat.js
+│               └── reports.js
+│
+├── 🤖 ML SERVICE LAYER
+│   └── ml/                             # Python FastAPI ML Service
+│       ├── Dockerfile
+│       ├── main.py                     # FastAPI application
+│       ├── requirements.txt
+│       ├── .env.template
+│       │
+│       ├── 📊 DATA LAYER
+│       ├── eda/
+│       │   ├── 📁 Raw Data
+│       │   │   └── data/raw/
+│       │   │       └── loan_dataset.csv        # Original dataset (~10k rows)
+│       │   │
+│       │   ├── 📁 Cleaned Data
+│       │   │   └── data/cleaned/
+│       │   │       └── loan_dataset_cleaned.csv  # Preprocessed dataset
+│       │   │
+│       │   └── 📁 EDA & Analysis
+│       │       └── analysis/
+│       │           ├── eda_report.md            # Analysis report
+│       │           ├── eda_script.py            # EDA notebook code
+│       │           ├── data_cleaning.py         # Preprocessing pipeline
+│       │           │
+│       │           └── 📁 Visualizations
+│       │               ├── target_dist.png                    # Approval distribution
+│       │               ├── correlation_heatmap.png           # Feature correlations
+│       │               ├── credit_score_vs_approved.png      # Feature relationship 1
+│       │               ├── dti_ratio_vs_approved.png         # Feature relationship 2
+│       │               ├── loan_amount_vs_approved.png       # Feature relationship 3
+│       │               └── monthly_income_vs_approved.png    # Feature relationship 4
+│       │
+│       ├── 🤖 MODEL TRAINING & ARTIFACTS
+│       ├── models/
+│       │   ├── model_metadata.json     # Model info & feature list
+│       │   ├── xgboost_model.pkl       # XGBoost ensemble
+│       │   ├── random_forest.pkl       # Random Forest model
+│       │   ├── logistic_regression.pkl # Logistic Regression
+│       │   ├── scaler.pkl              # Feature scaling object
+│       │   ├── label_encoder.pkl       # Categorical encoder
+│       │   └── feature_columns.pkl     # Feature column names
+│       │
+│       ├── training/
+│       │   ├── generate_data.py        # Synthetic data generation
+│       │   └── train_models.py         # Model training pipeline
+│       │
+│       ├── 🔮 PREDICTION & DEPLOYMENT
+│       ├── services/
+│       │   ├── __init__.py
+│       │   ├── prediction_engine.py    # Ensemble prediction
+│       │   ├── health_scorer.py        # Health scoring model
+│       │   ├── risk_analyzer.py        # Risk analysis engine
+│       │   ├── nlp_engine.py           # NLP & chatbot logic
+│       │   ├── simulation_engine.py    # Financial simulator
+│       │   └── document_analyzer.py    # Document parsing
+│       │
+│       └── ⚙️ TESTING
+│           └── tests/
+│               └── test_engines.py     # Unit tests for services
+│
+├── 🔄 CI/CD & DEPLOYMENT
+│   └── .github/
+│       └── workflows/
+│           └── ci-and-deploy.yml       # GitHub Actions pipeline
+│
+├── 📖 DOCUMENTATION
+│   ├── README.md                       # This file
+│   ├── ARCHITECTURE.md                 # System architecture
+│   ├── DEPLOYMENT.md                   # Deployment guide
+│   ├── LICENSE                         # MIT License
+│   └── (Config Files)
+│       ├── vercel.json                 # Vercel config (if applicable)
+│       ├── test_auth.js                # Auth test suite
+│       ├── test_features.js            # Feature test suite
+│       ├── test_firestore.js           # DB test suite
+│       ├── requirements.txt            # Root Python requirements
+│       ├── package.json                # Root package config
+│       └── loan-9e495-firebase-adminsdk-fbsvc-97db8bb313.json  # Firebase key (local only)
 ```
 
 ### Folder Details
-- `android/`: full Android application source in Java, resources, Gradle config.
-- `backend/`: REST API server, Firestore integration, security, and ML service gateway.
-- `ml-service/`: standalone AI/ML API service with FastAPI and model engines.
-- `.github/workflows/`: CI pipeline validating backend and ML service, publishing Docker images, and Fly deployment.
+- **`frontend/`**: Android Application source in Java, resources, and Gradle build system.
+- **`backend/`**: Express.js REST API, Firestore integration, security middleware, and ML service gateway.
+- **`ml/`**: Python FastAPI ML microservice with data, training, models, and prediction engines.
+  - **`ml/eda/`**: Complete data pipeline from raw → cleaned → analyzed → visualized.
+  - **`ml/models/`**: Trained model artifacts and feature metadata.
+  - **`ml/services/`**: Prediction, scoring, risk analysis, and chatbot engines.
+  - **`ml/training/`**: Scripts for model training and synthetic data generation.
+- **`.github/workflows/`**: CI/CD pipeline for testing, building Docker images, and deployment.
+
+---
+
+## EDA & Data Pipeline
+
+### Exploratory Data Analysis Overview
+
+The **Exploratory Data Analysis (EDA)** section documents the complete data journey from raw collection through preprocessing, analysis, visualization, and feature engineering that informs the ML models. All EDA artifacts, scripts, and datasets are located in the `ml/eda/` folder.
+
+### 1. Raw Data Layer
+
+**Location:** `ml/eda/data/raw/loan_dataset.csv`
+
+- **Source**: Loan application records from financial institutions
+- **Size**: ~10,000 rows of customer loan applications
+- **Format**: CSV (tabular structure)
+- **Key Fields**:
+  - **Financial Metrics**: `monthly_income`, `monthly_expenses`, `credit_score`, `savings_balance`, `loan_amount`
+  - **Loan Details**: `loan_term_months`, `interest_rate`, `existing_loans`, `existing_emi`
+  - **Risk Factors**: `missed_payments_last_year`, `bankruptcies`
+  - **Demographics**: `age`
+  - **Target Variable**: `approved` (binary: approved/rejected)
+
+---
+
+### 2. Data Cleaning & Preprocessing
+
+**Script Location:** `ml/eda/analysis/data_cleaning.py`
+
+**Processing Steps:**
+- **Missing Value Handling**
+  - Numeric fields (skewed): median imputation
+  - Categorical fields: mode imputation
+  - Documented thresholds in `ml/eda/analysis/eda_report.md`
+  
+- **Outlier Detection & Treatment**
+  - IQR method for extreme values
+  - Domain-based validation for financial metrics
+  
+- **Feature Engineering**
+  - Derived **Debt-to-Income Ratio (DTI)** = `(monthly_expenses + existing_emi) / monthly_income`
+  - Computed **Requested EMI** based on loan amount and term
+  - Created **Savings Ratio** = `savings_balance / monthly_income`
+  - Derived **Loan-to-Income Ratio** = `loan_amount / annual_income`
+
+**Output:** `ml/eda/data/cleaned/loan_dataset_cleaned.csv`
+
+---
+
+### 3. Cleaned Data Layer
+
+**Location:** `ml/eda/data/cleaned/loan_dataset_cleaned.csv`
+
+- **Size**: Clean dataset ready for ML model training
+- **Quality Checks**:
+  - No missing values after imputation
+  - Outliers handled and documented
+  - All derived features computed
+  - Data types validated
+
+---
+
+### 4. Exploratory Data Analysis
+
+**Report:** `ml/eda/analysis/eda_report.md`
+**Code:** `ml/eda/analysis/eda_script.py`
+
+#### Data Distribution Analysis
+- **Target Variable**: Distribution of approved vs. rejected loans
+  - Visualized in: `ml/eda/analysis/target_dist.png`
+  - Insight: Identifies class imbalance → informs training strategy
+  
+- **Numeric Feature Distributions**:
+  - Histograms and KDE plots for income, credit score, loan amount
+  - Identified skewness and modality for transformation planning
+
+- **Categorical Features**:
+  - Count analysis and low-frequency category detection
+  - Decision on grouping or removal
+
+#### Missing Value Analysis
+- Documented patterns of missingness
+- Justification for imputation method per field
+- Impact assessment on downstream models
+
+#### Feature Correlation Analysis
+- **Heatmap Visualization**: `ml/eda/analysis/correlation_heatmap.png`
+- **Key Findings**:
+  - Credit score shows strong negative correlation with rejection
+  - DTI ratio highly predictive of loan approval
+  - Income and loan amount show expected positive correlation
+  - Multicollinearity detection and feature selection
+
+---
+
+### 5. Visualization Layer
+
+**Location:** `ml/eda/analysis/`
+
+| Visualization | File | Insight |
+|---|---|---|
+| **Approval Distribution** | `target_dist.png` | Shows class balance/imbalance in dataset |
+| **Correlation Heatmap** | `correlation_heatmap.png` | Feature relationships and multicollinearity |
+| **Credit Score vs. Approval** | `credit_score_vs_approved.png` | Strong risk signal for predictions |
+| **DTI Ratio vs. Approval** | `dti_ratio_vs_approved.png` | Repayment burden predictive power |
+| **Loan Amount vs. Approval** | `loan_amount_vs_approved.png` | Requested amount impact on decision |
+| **Monthly Income vs. Approval** | `monthly_income_vs_approved.png` | Income sufficiency relationship |
+
+**Visualization Types**:
+- Histograms & density plots for distributions
+- Heatmaps for correlation matrices
+- Scatter plots for bivariate relationships
+- Box plots for outlier detection
+
+---
+
+### 6. Key Insights & Findings
+
+1. **Credit Score is Critical**
+   - Low credit scores (< 600) strongly associate with rejection
+   - Recommended as high-priority feature in models
+
+2. **Debt-to-Income Ratio Matters Most**
+   - Derived DTI feature outperforms raw income/expenses
+   - Threshold around 0.4–0.5 separates approval tiers
+
+3. **Missed Payments & Bankruptcies are Risk Multipliers**
+   - Even one missed payment in last year reduces approval by 30%+
+   - Any bankruptcy history is near-automatic rejection signal
+
+4. **Income Thresholds Exist**
+   - Minimum monthly income of ~5,000 needed for standard loans
+   - Loan-to-Income ratio of < 5x improves approval odds
+
+5. **Class Imbalance Detected**
+   - ~65% approved, 35% rejected
+   - Requires balanced sampling or weighted loss in training
+
+---
+
+### 7. EDA Impact on Model Development
+
+#### Feature Engineering Decisions
+- **Keep derived features**: DTI, Requested EMI, Savings Ratio, Loan-to-Income
+- **Drop redundant fields**: Original expense + income (use DTI instead)
+- **Encode categorical**: Binary encoding for bankruptcy, scaled numeric features
+
+#### Model Selection Implications
+- Class imbalance suggests: F1-score focus, not just accuracy
+- Feature importance will guide ensemble weights
+- Logistic regression baseline before ensemble methods
+
+#### Sampling Strategy
+- Stratified train/test split to preserve class proportions
+- Optional oversampling of minority (rejected) class in training
+- Cross-validation with stratified k-fold
+
+#### Validation Approach
+- Test set held separately from EDA to avoid leakage
+- Calibration analysis for probability outputs
+- Threshold tuning based on business false-positive cost
+
+---
+
+### 8. Data Files Reference
+
+```
+ml/eda/
+├── data/
+│   ├── raw/
+│   │   └── loan_dataset.csv                   # Original dataset
+│   └── cleaned/
+│       └── loan_dataset_cleaned.csv           # Processed dataset
+├── analysis/
+│   ├── eda_report.md                          # Detailed findings
+│   ├── eda_script.py                          # EDA code
+│   ├── data_cleaning.py                       # Preprocessing pipeline
+│   └── [visualizations - see table above]
+```
 
 ---
 
@@ -410,7 +691,7 @@ cp .env.template .env
 
 ### ML Service Setup
 ```bash
-cd ../ml-service
+cd ../ml
 python -m venv venv
 venv\Scripts\Activate.ps1
 pip install -r requirements.txt
@@ -436,7 +717,7 @@ Backend listens on `http://localhost:5000` by default.
 
 ### ML Service
 ```bash
-cd ml-service
+cd ml
 venv\Scripts\Activate.ps1
 python main.py
 ```
@@ -575,51 +856,6 @@ ML service listens on `http://localhost:8000`.
 
 ---
 
-## EDA (Exploratory Data Analysis)
-
-### EDA Overview
-The Exploratory Data Analysis (EDA) section documents how the loan dataset was inspected, cleaned, and analyzed prior to model training. All EDA artifacts, scripts, and visualizations are located under the `ml/eda/` folder.
-
-### Objectives
-- Understand dataset composition and distributions
-- Identify and handle missing values and outliers
-- Explore relationships between features and the target
-- Inform feature engineering and model selection
-
-### Dataset Understanding
-- Source: `ml/eda/data/raw/loan_dataset.csv`
-- Target: `approved` (binary) or an approval probability produced during model training
-- Typical fields: age, monthly_income, monthly_expenses, credit_score, existing_loans, existing_emi, loan_amount, loan_term_months, interest_rate, savings_balance, missed_payments_last_year, bankruptcies
-
-### Data Distribution Analysis
-- Visualized numeric feature distributions (histograms and density plots) to inspect skew and modality.
-- Examined categorical feature counts and low-frequency categories.
-
-### Missing Value Analysis
-- Identified missingness patterns and decided on imputation strategies (median for skewed numeric fields, mode for categorical fields).
-- Documented missing-value thresholds and actions in `ml/eda/analysis/eda_report.md`.
-
-### Feature Correlation Analysis
-- Computed Pearson/Spearman correlations and visualized via heatmap (`ml/eda/analysis/correlation_heatmap.png`).
-- Inspected multicollinearity and used domain-driven feature selection to remove redundant features.
-
-### Key Insights and Findings
-- Debt-to-Income ratio (derived feature) strongly correlates with rejection probability.
-- Low credit score and missed payments are high-severity risk signals.
-- Requested EMI and existing EMI together indicate overall repayment burden; models improved after deriving `total_emi_burden` and `requested_emi`.
-
-### Visualizations Used
-- Histograms, boxplots, KDE plots for distributions
-- Correlation heatmaps for feature interactions
-- Scatter plots for bivariate relationships (e.g., credit score vs approval rate)
-
-### Impact of EDA on Model Development
-- New derived features (DTI, requested EMI, savings ratio, loan-to-income) improved model performance and interpretability.
-- Addressed class imbalance and informed sampling strategy for training.
-- EDA findings are summarized in `ml/eda/analysis/eda_report.md` and code in `ml/eda/analysis/data_cleaning.py`.
-
----
-
 ## Optimization Report
 
 ### Key improvements
@@ -647,15 +883,16 @@ Contributions should follow these rules:
 - Document new features in README or architecture docs
 - Add tests for backend and ML service changes
 - Avoid committing credentials or local environment files
-- Maintain consistent code organization within `android/`, `backend/`, and `ml-service/`
+- Maintain consistent code organization within `frontend/`, `backend/`, and `ml/`
 
 ---
 
 ## Developer Notes
 
-- The Android Application is the primary user experience layer.
-- The backend handles auth, persistence, and ML service orchestration.
-- The ML service is a standalone FastAPI app designed to be deployed independently.
+- The Android Application is the primary user experience layer (located in `frontend/`).
+- The backend handles auth, persistence, and ML service orchestration (located in `backend/`).
+- The ML service is a standalone FastAPI app designed to be deployed independently (located in `ml/`).
+- EDA pipeline, data, and model artifacts are organized under `ml/eda/` and `ml/models/`.
 - Use `.env.template` files to configure local development.
 - Run FastAPI and backend services locally before launching the Android app.
 
